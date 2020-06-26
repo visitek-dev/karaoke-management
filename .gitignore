@@ -1,15 +1,15 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/karaoke-management-front/node_modules
-/karaoke-management-front/.pnp
+/frontend/node_modules
+/.pnp
 .pnp.js
 
 # testing
-/karaoke-management-front/coverage
+/coverage
 
 # production
-/karaoke-management-front/build
+/build
 
 # misc
 .DS_Store
