@@ -46,6 +46,8 @@ export default function Chart() {
         weekReceipts[weekReceipts.length - 1] = receipts.items.filter(
           (x) => new Date(x.checkOutDate).getDate() === new Date().getDate() - i
         );
+
+        console.log(weekReceipts);
         let checkOutDate = (new Date().getDate() - i).toString();
         let total = 0;
 

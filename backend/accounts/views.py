@@ -221,15 +221,19 @@ class ScheduleViewSet(viewsets.ModelViewSet):
             staff=user, weeklySchedule=weeklySchedule)
 
         if weeklySalary.count() == 0:
-            salary = WeeklySalary.create(
+            salary = WeeklySalary.objects.create(
                 staff=user, weeklySchedule=weeklySchedule)
 
         return Response(serializer.data)
 
     def destroy(self, request, pk=None):
-        schedule = get_object_or_404(Schedule, pk=request.query_params['pk'])
+        print("------------------")
+        print("-------------------------------------------------")
+        print(self.kwargs)
+        schedule = get_object_or_404(Schedule, pk=self.kwargs.get('pk'))
         schedule.delete()
 
+        return Response({})
 
 class AllScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Schedule.objects.all()

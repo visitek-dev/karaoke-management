@@ -118,6 +118,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
   },
   fixedHeight: {
+    paddingRight: "70px",
     height: 300,
   },
   seeMore: {
