@@ -14,4 +14,5 @@ pycparser==2.20
 PyJWT==1.7.1
 pytz==2020.1
 six==1.14.0
+django-background-tasks==1.2.5
 sqlparse==0.3.1

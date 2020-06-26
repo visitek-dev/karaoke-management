@@ -1,7 +1,7 @@
-from .models import User, Schedule, WeeklySchedule
+from .models import User, Schedule, WeeklySchedule, WeeklySalary
 from rest_framework import viewsets, generics, mixins, views, filters
 from rest_framework import permissions
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, ScheduleSerializer, WeeklyScheduleSerializer, CreateWeeklyScheduleSerializer, WeeklyScheduleNoInline
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, ScheduleSerializer, WeeklyScheduleSerializer, CreateWeeklyScheduleSerializer, WeeklyScheduleNoInline, WeeklySalarySerializer
 from rest_framework.response import Response
 from knox.models import AuthToken
 from django.shortcuts import get_object_or_404
@@ -217,7 +217,18 @@ class ScheduleViewSet(viewsets.ModelViewSet):
 
         schedule = serializer.save()
 
+        weeklySalary = WeeklySalary.objects.filter(
+            staff=user, weeklySchedule=weeklySchedule)
+
+        if weeklySalary.count() == 0:
+            salary = WeeklySalary.create(
+                staff=user, weeklySchedule=weeklySchedule)
+
         return Response(serializer.data)
+
+    def destroy(self, request, pk=None):
+        schedule = get_object_or_404(Schedule, pk=request.query_params['pk'])
+        schedule.delete()
 
 
 class AllScheduleViewSet(viewsets.ReadOnlyModelViewSet):

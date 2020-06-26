@@ -22,6 +22,12 @@ class InlineWeekySalarySerializer(serializers.ModelSerializer):
         fields = ['staff', 'weeklySchedule', 'weeklySalary']
 
 
+class WeeklySalarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WeeklySalary
+        fields = ['staff', 'weeklySchedule', 'weeklySalary']
+
+
 class InlineScheduleSerializerWeekly(serializers.ModelSerializer):
     class Meta:
         model = Schedule
