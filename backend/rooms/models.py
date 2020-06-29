@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import datetime, date
+import datetime as full_datetime
 import decimal
 
 
@@ -76,10 +77,13 @@ class Payment(models.Model):
     def get_total(self):
         if self.checkOutDate is None:
             return 0
-        diff = ((self.checkOutDate - self.checkInDate) / 3600)
-        diff = diff.total_seconds()
-        print(diff)
-        price = self.price * decimal.Decimal(diff)
+        diff = (self.checkOutDate - self.checkInDate).total_seconds()
+
+        hours = int(diff / 3600)
+        minutes = (diff - hours * 3600) / 60
+        total_seconds = hours * 3600 + minutes * 60
+        total_hours = total_seconds / 3600
+        price = self.room.price * decimal.Decimal(total_hours)
 
         for product in self.products.all():
             price = decimal.Decimal(

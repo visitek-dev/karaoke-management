@@ -45,7 +45,7 @@ class WeeklyScheduleSerializer(serializers.HyperlinkedModelSerializer):
 class WeeklyScheduleNoInline(serializers.ModelSerializer):
     class Meta:
         model = WeeklySchedule
-        fields = ['id', 'start']
+        fields = ['id', 'start', 'created_at']
 
 
 class CreateWeeklyScheduleSerializer(serializers.ModelSerializer):
