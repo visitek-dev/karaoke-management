@@ -23,7 +23,7 @@ admin.site.register(WeeklySchedule)
 
 
 class WeeklySalaryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'staff', 'weeklySchedule')
+    pass
 
 
 admin.site.register(WeeklySalary, WeeklySalaryAdmin)

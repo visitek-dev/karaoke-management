@@ -33,14 +33,6 @@ import { DatePicker } from "@material-ui/pickers";
 import Modal from "@material-ui/core/Modal";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
-function dateFormat(date) {
-  return new Intl.DateTimeFormat("en-GB", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date(date));
-}
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
