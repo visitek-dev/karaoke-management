@@ -32,6 +32,8 @@ import Button from "@material-ui/core/Button";
 import { DatePicker } from "@material-ui/pickers";
 import Modal from "@material-ui/core/Modal";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import Box from "@material-ui/core/Box";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -133,6 +135,10 @@ const SelectProps = {
   },
 };
 
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 export default function Schedules(props) {
   const classes = useStyles();
 
@@ -162,8 +168,21 @@ export default function Schedules(props) {
   }, [dispatch]);
 
   useEffect(() => {
-    if (weeklySchedules.items) {
-      setSelectedWeeklySchedule(weeklySchedules.items[0]);
+    if (weeklySchedules.items.length > 0) {
+      setSelectedWeeklySchedule(
+        weeklySchedules.items.find((element) => {
+          var curr = new Date();
+          //var startDay = new Date(weeklySchedules.items[0]);
+
+          var startDay = new Date(element.start);
+          var lastday = new Date(
+            new Date().setDate(startDay.getDate() - startDay.getDay() + 7)
+          );
+
+          if (startDay < curr && curr < lastday) return true;
+          else return false;
+        })
+      );
     }
   }, [weeklySchedules.items]);
 
@@ -176,7 +195,10 @@ export default function Schedules(props) {
       var curr = new Date();
       var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1));
 
-      if (weeklyScheduleStart.getDate() > firstday.getDate())
+      if (
+        new Date(weeklyScheduleStart.toDateString()) <
+        new Date(firstday.toDateString())
+      )
         setValidate(false);
       else setValidate(true);
     }
@@ -257,10 +279,6 @@ export default function Schedules(props) {
     handleDateModalClose();
   };
 
-  useEffect(() => {
-    console.log(users.user && users.user.is_staff);
-  }, [users.user]);
-
   return (
     <React.Fragment>
       <Snackbar open={openAlert} autoHideDuration={3000} onClose={handleClose}>
@@ -296,12 +314,14 @@ export default function Schedules(props) {
               </Alert>
             </Collapse>
 
+            {/* Main Weekly Schedule Container */}
             {weeklySchedules.items ? (
               <React.Fragment>
                 <Grid
                   container
                   justify="space-evenly"
                   alignItems="center"
+                  spacing={2}
                   style={{ marginBottom: 20 }}
                 >
                   {/* Choose Weekly Schedule */}
@@ -324,8 +344,8 @@ export default function Schedules(props) {
                     />
                   </Grid>
 
+                  {/* Modal add new Weekly Schedule */}
                   <Grid item>
-                    {/* Modal add new Weekly Schedule */}
                     <Button
                       variant="contained"
                       color="primary"
@@ -341,26 +361,39 @@ export default function Schedules(props) {
                       aria-describedby="simple-modal-description"
                     >
                       <Paper className={classes.paperDateModal}>
-                        <DatePicker
-                          disableToolbar
-                          disablePast
-                          variant="inline"
-                          label="Only calendar"
-                          helperText="No year selection"
-                          value={selectedDate}
-                          onChange={handleDateChange}
-                        />
-                        <Button
-                          variant="contained"
-                          onClick={() => handleAddWeeklySchedule()}
+                        <Grid
+                          container
+                          direction="column"
+                          alignItems="center"
+                          spacing={4}
                         >
-                          Add
-                        </Button>
+                          <Grid item>
+                            <DatePicker
+                              disableToolbar
+                              disablePast
+                              autoOk
+                              variant="inline"
+                              label="Weekly Schedule day"
+                              value={selectedDate}
+                              onChange={handleDateChange}
+                            />
+                          </Grid>
+                          <Grid item>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              onClick={() => handleAddWeeklySchedule()}
+                            >
+                              Add
+                            </Button>
+                          </Grid>
+                        </Grid>
                       </Paper>
                     </Modal>
                   </Grid>
                 </Grid>
-                {/* Table Schedule this week */}
+
+                {/* Schedule Table of choosing week */}
                 {schedules.items ? (
                   <TableContainer component={Paper}>
                     <Table className={classes.table} aria-label="simple table">
@@ -578,6 +611,94 @@ export default function Schedules(props) {
                       </TableBody>
                     </Table>
                   </TableContainer>
+                ) : (
+                  <Skeleton variant="rect" width={"100vw"} height={300} />
+                )}
+
+                {/* Info Table of choosing week */}
+                {schedules.salaries && schedules.items ? (
+                  <React.Fragment>
+                    <Typography
+                      variant="h5"
+                      color="primary"
+                      align="center"
+                      gutterBottom
+                    >
+                      <Box fontWeight="fontWeightBold" m={1}>
+                        Info Table
+                      </Box>
+                    </Typography>
+
+                    <TableContainer component={Paper}>
+                      <Table
+                        className={classes.table}
+                        aria-label="simple table"
+                      >
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>Employee</TableCell>
+                            <TableCell>Working shifts</TableCell>
+                            <TableCell align="right">Wage per shift</TableCell>
+                            <TableCell align="right">
+                              Number of working shifts
+                            </TableCell>
+
+                            <TableCell align="right">
+                              Salary of this week
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {schedules.salaries.map(
+                            (row, index) =>
+                              row.weeklySalary > 0 && (
+                                <TableRow key={index}>
+                                  <TableCell component="th" scope="row">
+                                    {(
+                                      users.items.find(
+                                        (x) => x.id === row.staff
+                                      ) || {}
+                                    ).username || null}
+                                  </TableCell>
+                                  <TableCell>
+                                    {schedules.items
+                                      .filter((x) => x.staff === row.staff)
+                                      .map((x, index) => {
+                                        return (
+                                          <Typography key={index}>
+                                            {x.weekDay + ", " + x.workingTime}
+                                          </Typography>
+                                        );
+                                      })}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {numberWithCommas(
+                                      (
+                                        users.items.find(
+                                          (x) => x.id === row.staff
+                                        ) || {}
+                                      ).salary
+                                    ) || null}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {[...schedules.items].reduce(
+                                      (total, schedule) =>
+                                        schedule.staff === row.staff
+                                          ? total + 1
+                                          : total,
+                                      0
+                                    )}
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {numberWithCommas(row.weeklySalary)}
+                                  </TableCell>
+                                </TableRow>
+                              )
+                          )}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </React.Fragment>
                 ) : (
                   <Skeleton variant="rect" width={"100vw"} height={300} />
                 )}

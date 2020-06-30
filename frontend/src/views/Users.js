@@ -97,12 +97,12 @@ const headCells = [
     disablePadding: true,
     label: "Wage",
   },
-  {
-    id: "monthly_salary",
-    numeric: false,
-    disablePadding: true,
-    label: "Month Salary",
-  },
+  // {
+  //   id: "monthly_salary",
+  //   numeric: false,
+  //   disablePadding: true,
+  //   label: "Month Salary",
+  // },
   {
     id: "createAt",
     numeric: false,
@@ -718,13 +718,13 @@ export default function Users(props) {
                                 >
                                   {numberWithCommas(Math.round(row.salary))}
                                 </TableCell>
-                                <TableCell
+                                {/* <TableCell
                                   className={classes.tableCell}
                                   scope="row"
                                   padding="none"
                                 >
                                   {numberWithCommas(row.monthly_salary)}
-                                </TableCell>
+                                </TableCell> */}
                               </React.Fragment>
                             ) : null}
                             <TableCell
