@@ -117,6 +117,7 @@ export function weeklySchedules(state = initialState, action) {
     case weeklyScheduleConstants.ADD_SUCCESS:
       return {
         ...state,
+        items: [...state.items, action.weeklySchedule],
         item: [],
         error: null,
       };

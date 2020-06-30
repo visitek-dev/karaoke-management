@@ -6,7 +6,6 @@ import Grid from "@material-ui/core/Grid";
 import CustomDrawer from "../components/CustomDrawer";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import Collapse from "@material-ui/core/Collapse";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
@@ -46,23 +45,11 @@ const useStyles = makeStyles((theme) => ({
   gridList: {
     height: "60vh",
   },
+  switch: {
+    margin: "auto",
+    marginTop: theme.spacing(2),
+  },
 }));
-
-const weekdaysOption = [
-  { title: "Monday", value: "monday" },
-  { title: "Tuesday", value: "tuesday" },
-  { title: "Wednesday", value: "wednesday" },
-  { title: "Thursday", value: "thursday" },
-  { title: "Friday", value: "friday" },
-  { title: "Saturday", value: "saturday" },
-  { title: "Sunday", value: "sunday" },
-];
-
-const workingTimeOption = [
-  { title: "Morning", value: "morning" },
-  { title: "Afternoon", value: "afternoon" },
-  { title: "Evening", value: "evening" },
-];
 
 export default function UserEdit(props) {
   const classes = useStyles();
@@ -105,76 +92,8 @@ export default function UserEdit(props) {
     );
   };
 
-  const addNewSchedulesClick = () => {
-    setNewSchedules((newSchedules) => [
-      ...newSchedules,
-      { weekDay: "monday", workingTime: "morning" },
-    ]);
-  };
-
   const keyPressed = (e) => {
     if (e.key === "Enter") onSubmit(e);
-  };
-
-  const handleWeekdaysSelected = (value, index) => {
-    if (value) {
-      setNewSchedules((state) => {
-        let new_schedule = state;
-        new_schedule[index].weekDay = value.value;
-
-        return [...new_schedule];
-      });
-    }
-  };
-
-  const weekDayToIndex = (weekDay) => {
-    switch (weekDay) {
-      case "monday":
-        return 0;
-      case "tuesday":
-        return 1;
-      case "wednesday":
-        return 2;
-      case "thursday":
-        return 3;
-      case "friday":
-        return 4;
-      case "saturday":
-        return 5;
-      case "sunday":
-        return 6;
-      default:
-        return 0;
-    }
-  };
-  const workingTimeToIndex = (workingTime) => {
-    switch (workingTime) {
-      case "morning":
-        return 0;
-      case "afternoon":
-        return 1;
-      case "evening":
-        return 2;
-      default:
-        return 0;
-    }
-  };
-
-  const handleWorkingTimeSelected = (value, index) => {
-    if (value) {
-      setNewSchedules((state) => {
-        let new_schedule = state;
-        new_schedule[index].workingTime = value.value;
-
-        return [...new_schedule];
-      });
-    }
-  };
-
-  const onDelete = (index) => {
-    newSchedules.splice(index, 1);
-
-    setNewSchedules([...newSchedules]);
   };
 
   const handleChange = (e) => {
@@ -195,11 +114,11 @@ export default function UserEdit(props) {
   }, [users.item]);
 
   useEffect(() => {
-    if (typeof is_staff === "string") {
-      if (is_staff === "False") setFormData(((f) => is_staff: false));
-      else setFormData(((f) => is_staff: true));
-    } else return;
-  }, [is_staff]);
+    if (typeof is_staff === "string")
+      is_staff === "False"
+        ? setFormData({ ...formData, is_staff: false })
+        : setFormData({ ...formData, is_staff: true });
+  }, [formData, is_staff]);
 
   return (
     <React.Fragment>
@@ -304,12 +223,12 @@ export default function UserEdit(props) {
                     <TextField
                       fullWidth
                       style={{ marginTop: "10px" }}
-                      label="Salary"
-                      id="outlined-salary"
+                      label="Wage"
+                      id="outlined-wage"
                       variant="outlined"
                       name="salary"
                       type="number"
-                      value={salary || 0}
+                      value={Math.round(salary) || 0}
                       onChange={(e) => onChange(e)}
                       onKeyPress={(e) => keyPressed(e)}
                     />

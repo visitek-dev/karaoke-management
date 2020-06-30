@@ -239,7 +239,6 @@ const EnhancedTableToolbar = (props) => {
   const [deleteOpen, setDeleteOpen] = React.useState(false);
 
   const receipts = useSelector((state) => state.receipts);
-  const users = useSelector((state) => state.users);
   const dispatch = useDispatch();
 
   const onDelete = (id) => {
@@ -467,6 +466,10 @@ const filterOption = [
   { title: "Checked In", value: "checkedIn" },
   { title: "Checked Out", value: "checkedOut" },
 ];
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 export default function Receipts(props) {
   const classes = useStyles();
@@ -717,11 +720,18 @@ export default function Receipts(props) {
                           <TableCell scope="row" padding="none">
                             {dateFormat(row.checkInDate)}
                           </TableCell>
+                          {row.checkOutDate ? (
+                            <TableCell scope="row" padding="none">
+                              {dateFormat(row.checkOutDate)}
+                            </TableCell>
+                          ) : (
+                            <TableCell scope="row" padding="none">
+                              {"None"}
+                            </TableCell>
+                          )}
+
                           <TableCell scope="row" padding="none">
-                            {dateFormat(row.checkOutDate)}
-                          </TableCell>
-                          <TableCell scope="row" padding="none">
-                            {Number(row.total).toFixed(2)}
+                            {numberWithCommas(Number(row.total).toFixed(2))}
                           </TableCell>
                           <TableCell scope="row" padding="none">
                             {row.status}

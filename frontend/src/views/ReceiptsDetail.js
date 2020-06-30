@@ -11,6 +11,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 import { useDispatch, useSelector } from "react-redux";
 import { roomActions, productActions, receiptActions } from "../actions";
@@ -57,6 +58,10 @@ function subtotal(items) {
     .reduce((sum, i) => sum + i, 0);
 }
 
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 export default function ReceiptDetail(props) {
   const classes = useStyles();
   const rooms = useSelector((state) => state.rooms);
@@ -65,6 +70,8 @@ export default function ReceiptDetail(props) {
   const dispatch = useDispatch();
 
   const [productsInReceipt, setProductsInReceipt] = useState([]);
+
+  const [totalHour, setTotalHour] = useState();
 
   useEffect(() => {
     setProductsInReceipt(
@@ -77,6 +84,15 @@ export default function ReceiptDetail(props) {
           )
         : []
     );
+    receipts.item &&
+      setTotalHour(
+        Math.floor(
+          Math.abs(
+            new Date(receipts.item.checkOutDate) -
+              new Date(receipts.item.checkInDate)
+          ) / 3600000
+        )
+      );
   }, [receipts.item, products.items]);
 
   useEffect(() => {}, [receipts.item]);
@@ -124,25 +140,14 @@ export default function ReceiptDetail(props) {
                 <Typography variant="h6" gutterBottom>
                   Total hours:{" "}
                   <strong>
-                    {Math.floor(
-                      Math.abs(
-                        new Date(receipts.item.checkOutDate) -
-                          new Date(receipts.item.checkInDate)
-                      ) / 3600000
-                    )}{" "}
-                    hours{" "}
+                    {totalHour} hours{" "}
                     {Math.floor(
                       (Math.abs(
                         new Date(receipts.item.checkOutDate) -
                           new Date(receipts.item.checkInDate)
                       ) /
                         3600000 -
-                        Math.floor(
-                          Math.abs(
-                            new Date(receipts.item.checkOutDate) -
-                              new Date(receipts.item.checkInDate)
-                          ) / 3600000
-                        )) *
+                        totalHour) *
                         60
                     )}{" "}
                     mins
@@ -154,90 +159,89 @@ export default function ReceiptDetail(props) {
                 <Typography variant="h6" align="center" gutterBottom>
                   BILL
                 </Typography>
-                {productsInReceipt.length > 0 ? (
-                  <TableContainer component={Paper}>
-                    <Table className={classes.table} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Product name </TableCell>
-                          <TableCell align="right">Quantity</TableCell>
-                          <TableCell align="right">Price</TableCell>
-                          <TableCell align="right">Sum</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {productsInReceipt.map((product, index) => (
-                          <TableRow key={index}>
-                            <TableCell component="th" scope="row">
-                              {product.productName}
-                            </TableCell>
-                            <TableCell align="right">
-                              {product.quantity}
-                            </TableCell>
-                            <TableCell align="right">{product.price}</TableCell>
-                            <TableCell align="right">
-                              {product.price * product.quantity}
-                            </TableCell>
-                          </TableRow>
-                        ))}
 
-                        <TableRow>
-                          <TableCell rowSpan={3} />
-                          <TableCell colSpan={2}>Subtotal products</TableCell>
-                          <TableCell align="right">
-                            {subtotal(productsInReceipt)}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>Subtotal room price</TableCell>
-                          <TableCell align="right">
-                            {receipts.item.price}$ per hour
-                          </TableCell>
-                          <TableCell align="right">
-                            {receipts.item.total - subtotal(productsInReceipt)}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell colSpan={2}>Total</TableCell>
-                          <TableCell align="right">
-                            {receipts.item.total}
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                ) : (
-                  <TableContainer component={Paper}>
-                    <Table className={classes.table} aria-label="simple table">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Room</TableCell>
-                          <TableCell align="right">Price per hour</TableCell>
-                          <TableCell align="right">Total</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <TableRow key={receipts.item._id}>
+                <TableContainer component={Paper}>
+                  <Table className={classes.table} aria-label="simple table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Product Name (Room ID) </TableCell>
+                        <TableCell align="right">Quantity(Used Time)</TableCell>
+                        <TableCell align="right">Price</TableCell>
+                        <TableCell align="right">Sum</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {productsInReceipt.map((product, index) => (
+                        <TableRow key={index}>
                           <TableCell component="th" scope="row">
-                            {(
-                              rooms.items.find(
-                                (x) => x.id === receipts.item.room
-                              ) || {}
-                            ).roomId || receipts.item.room}
+                            {product.productName}
                           </TableCell>
                           <TableCell align="right">
-                            {receipts.item.price}
+                            {Math.round(product.quantity)}
                           </TableCell>
                           <TableCell align="right">
-                            {receipts.item.total}
+                            {numberWithCommas(product.price)}
+                          </TableCell>
+                          <TableCell align="right">
+                            {numberWithCommas(product.price * product.quantity)}
                           </TableCell>
                         </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                )}
+                      ))}
+                      <TableRow key={receipts.item._id}>
+                        <TableCell component="th" scope="row">
+                          Room{" "}
+                          {(
+                            rooms.items.find(
+                              (x) => x.id === receipts.item.room
+                            ) || {}
+                          ).roomId || receipts.item.room}
+                        </TableCell>
+                        <TableCell align="right">
+                          {totalHour} hours{" "}
+                          {Math.floor(
+                            (Math.abs(
+                              new Date(receipts.item.checkOutDate) -
+                                new Date(receipts.item.checkInDate)
+                            ) /
+                              3600000 -
+                              totalHour) *
+                              60
+                          )}{" "}
+                          mins
+                        </TableCell>
+                        <TableCell align="right">
+                          {numberWithCommas(Math.round(receipts.item.price))}
+                        </TableCell>
+                        <TableCell align="right">
+                          {numberWithCommas(
+                            (
+                              receipts.item.total - subtotal(productsInReceipt)
+                            ).toFixed(2)
+                          )}
+                        </TableCell>
+                      </TableRow>
+
+                      <TableRow>
+                        <TableCell rowSpan={2} />
+                      </TableRow>
+                      <TableRow>
+                        <TableCell></TableCell>
+                        <TableCell>
+                          <strong>Total</strong>
+                        </TableCell>
+                        <TableCell align="right">
+                          <strong>
+                            {numberWithCommas(receipts.item.total)}
+                          </strong>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
               </React.Fragment>
-            ) : null}
+            ) : (
+              <LinearProgress />
+            )}
           </Container>
         </main>
       </div>

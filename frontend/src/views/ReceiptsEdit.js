@@ -166,7 +166,7 @@ export default function ReceiptEdit(props) {
         receiptActions.update(props.match.params.id, {
           ...formData,
           products: newProducts,
-          checkInDate: selectedCheckIn,
+          checkInDate: new Date(selectedCheckIn.setSeconds(0, 0)),
         })
       );
     else if (selectedCheckIn < selectedCheckOut)
@@ -174,8 +174,8 @@ export default function ReceiptEdit(props) {
         receiptActions.update(props.match.params.id, {
           ...formData,
           products: newProducts,
-          checkInDate: selectedCheckIn,
-          checkOutDate: selectedCheckOut,
+          checkInDate: new Date(selectedCheckIn.setSeconds(0, 0)),
+          checkOutDate: new Date(selectedCheckOut.setSeconds(0, 0)),
         })
       );
     else {

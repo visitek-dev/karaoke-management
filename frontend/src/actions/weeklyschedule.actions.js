@@ -111,7 +111,7 @@ function add(weeklySchedule) {
     await weeklyScheduleService.add(weeklySchedule).then(
       (weeklySchedule) => {
         dispatch(success(weeklySchedule));
-        history.replace({ pathname: "/weeklySchedules", state: 201 });
+        history.replace({ pathname: "/schedules", state: 201 });
       },
       (error) => {
         if (error.response && error.response.data) {
@@ -119,11 +119,10 @@ function add(weeklySchedule) {
 
           let errorValue = error.response.data[errorkey][0];
 
-          console.log(error.response.data[errorkey][0]);
-          console.log(errorValue.toString());
+          console.log(errorValue);
 
           dispatch(
-            failure(errorkey.toUpperCase() + ": " + errorValue.toString())
+            failure(errorkey.toUpperCase() + ": " + errorValue.dupplicate)
           );
         } else {
           dispatch(failure(error.toString()));
@@ -178,7 +177,7 @@ function _delete(id) {
     await weeklyScheduleService.delete(id).then(
       (id) => {
         dispatch(success(id));
-        history.replace({ pathname: "/weeklySchedules", state: 203 });
+        history.replace({ pathname: "/schedules", state: 203 });
       },
       (error) => {
         if (error.response && error.response.data) {

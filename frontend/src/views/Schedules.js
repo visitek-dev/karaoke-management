@@ -176,7 +176,7 @@ export default function Schedules(props) {
       var curr = new Date();
       var firstday = new Date(curr.setDate(curr.getDate() - curr.getDay() + 1));
 
-      if (weeklyScheduleStart.getDate() < firstday.getDate())
+      if (weeklyScheduleStart.getDate() > firstday.getDate())
         setValidate(false);
       else setValidate(true);
     }
@@ -199,7 +199,7 @@ export default function Schedules(props) {
       default:
         break;
     }
-  }, [schedules.items]);
+  }, [weeklySchedules.items]);
 
   useEffect(() => {
     if (schedules.error && typeof schedules.error === "string") {
@@ -235,7 +235,6 @@ export default function Schedules(props) {
   };
 
   const handleDelete = (chipToDelete) => () => {
-    console.log(chipToDelete);
     dispatch(
       scheduleActions.delete([chipToDelete.id], chipToDelete.weeklySchedule)
     );
@@ -247,6 +246,15 @@ export default function Schedules(props) {
 
   const handleDateModalClose = () => {
     setDateModalOpen(false);
+  };
+
+  const handleAddWeeklySchedule = () => {
+    dispatch(
+      weeklyScheduleActions.add({
+        start: selectedDate.toISOString().slice(0, 10),
+      })
+    );
+    handleDateModalClose();
   };
 
   useEffect(() => {
@@ -344,13 +352,7 @@ export default function Schedules(props) {
                         />
                         <Button
                           variant="contained"
-                          onClick={() => {
-                            dispatch(
-                              weeklyScheduleActions.add({
-                                start: selectedDate.toISOString().slice(0, 10),
-                              })
-                            );
-                          }}
+                          onClick={() => handleAddWeeklySchedule()}
                         >
                           Add
                         </Button>

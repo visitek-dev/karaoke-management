@@ -92,8 +92,8 @@ const headCells = [
     label: "Product Name",
   },
   // { id: "img", numeric: false, disablePadding: false, label: "Image" },
-  { id: "price", numeric: true, disablePadding: false, label: "Price" },
-  { id: "stock", numeric: true, disablePadding: false, label: "Stock" },
+  { id: "price", numeric: true, disablePadding: true, label: "Price" },
+  { id: "stock", numeric: true, disablePadding: true, label: "Stock" },
   {
     id: "create_at",
     numeric: true,

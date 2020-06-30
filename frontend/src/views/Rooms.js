@@ -437,6 +437,10 @@ const filterOption = [
   { title: "Not Available", value: "notAvailable" },
 ];
 
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 export default function Rooms(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState("asc");
@@ -687,7 +691,7 @@ export default function Rooms(props) {
                               {row.roomId}
                             </TableCell>
                             <TableCell scope="row" padding="none">
-                              {row.price}
+                              {numberWithCommas(row.price)}
                             </TableCell>
                             <TableCell scope="row" padding="none">
                               {row.status}

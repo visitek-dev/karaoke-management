@@ -162,13 +162,7 @@ export default function UserAdd(props) {
             <FormGroup>
               <FormControlLabel
                 className={classes.switch}
-                control={
-                  <Switch
-                    checked={formData.is_staff}
-                    onChange={handleChange}
-                    name="is_staff"
-                  />
-                }
+                control={<Switch onChange={handleChange} name="is_staff" />}
                 label="Admin"
               />
             </FormGroup>
