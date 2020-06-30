@@ -17,6 +17,9 @@ from rest_framework import status
 from background_task import background
 from datetime import date, datetime
 import datetime as full_datetime
+import json
+from django.core import serializers
+from django.forms.models import model_to_dict
 
 
 @background(schedule=1)
@@ -225,7 +228,9 @@ class ScheduleViewSet(viewsets.ModelViewSet):
 
             salary.save()
 
-        return Response(serializer.data)
+        fdrdg
+
+        return Response(context)
 
     def destroy(self, request, pk=None):
 
@@ -247,12 +252,26 @@ class ScheduleViewSet(viewsets.ModelViewSet):
 
         schedule.delete()
 
-        return Response({})
+        weeklySalarySerializer = WeeklySalarySerializer(salary)
+
+        return Response(weeklySalarySerializer.data)
 
 
 class AllScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Schedule.objects.all()
     serializer_class = ScheduleSerializer
+    pagination_class = LargeResultsSetPagination
+    filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
+
+    # Explicitly specify which fields the API may be ordered against
+
+    # This will be used as the default ordering
+    ordering = ['-created_at']
+
+
+class AllWeekySalaryViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = WeeklySalary.objects.all()
+    serializer_class = WeeklySalarySerializer
     pagination_class = LargeResultsSetPagination
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
 

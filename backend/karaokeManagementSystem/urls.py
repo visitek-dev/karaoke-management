@@ -42,6 +42,7 @@ router.register(r'allUsers', accounts_views.AllUserViewSet)
 router.register(r'allPayments', rooms_views.AllPaymentViewSet)
 router.register(r'allWeeklySchedules', accounts_views.AllWeeklyScheduleViewSet)
 
+
 urlpatterns = [
     path('', include('accounts.urls')),
     path('admin/', admin.site.urls),
