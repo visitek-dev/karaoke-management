@@ -160,15 +160,9 @@ class WeeklySalary(models.Model):
 
     def get_weekly_salary(self):
         hour_salary = self.staff.salary
-        print("---------------------------------------------------")
-        print("-----------------------------------------------------")
-        print(self.weeklySchedule)
-        print(self.staff.salary)
 
         schedules = Schedule.objects.filter(
             staff=self.staff, weeklySchedule=self.weeklySchedule)
-
-        print(schedules.count())
 
         return hour_salary * schedules.count()
 

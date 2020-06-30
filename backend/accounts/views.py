@@ -228,7 +228,10 @@ class ScheduleViewSet(viewsets.ModelViewSet):
 
             salary.save()
 
-        fdrdg
+        weeklySalarySerializer = WeeklySalarySerializer(salary)
+        context = {}
+        context['schedule'] = serializer.data
+        context['salary'] = weeklySalarySerializer.data
 
         return Response(context)
 
