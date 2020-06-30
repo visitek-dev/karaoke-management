@@ -252,7 +252,12 @@ class ScheduleViewSet(viewsets.ModelViewSet):
             salary.weeklySalary = salary.get_weekly_salary()
 
             salary.save()
+        else:
+            salary = weeklySalary.first()
+            salary.weeklySalary = salary.get_weekly_salary()
 
+            salary.save()
+            
         schedule.delete()
 
         weeklySalarySerializer = WeeklySalarySerializer(salary)
