@@ -245,6 +245,8 @@ class ScheduleViewSet(viewsets.ModelViewSet):
         weeklySalary = WeeklySalary.objects.filter(
             staff=user, weeklySchedule=weeklySchedule)
 
+        schedule.delete()
+
         if weeklySalary.count() == 0:
             salary = WeeklySalary.objects.create(
                 staff=user, weeklySchedule=weeklySchedule)
@@ -257,8 +259,6 @@ class ScheduleViewSet(viewsets.ModelViewSet):
             salary.weeklySalary = salary.get_weekly_salary()
 
             salary.save()
-            
-        schedule.delete()
 
         weeklySalarySerializer = WeeklySalarySerializer(salary)
 
