@@ -10,6 +10,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import status
 from decimal import *
 
+from datetime import date, datetime
+import datetime as full_datetime
+from django.core import serializers
+
 
 class RoomViewSet(viewsets.ModelViewSet):
     """
@@ -86,6 +90,14 @@ class AllPaymentViewSet(viewsets.ReadOnlyModelViewSet):
 
     # This will be used as the default ordering
     ordering = ['-created_at']
+
+    def list(selt, request, format=None):
+        payments = Payment.objects.all()
+        if 'startDate' in request.query_params:
+            payments = Payment.objects.filter(checkOutDate__gt=datetime.strptime(
+                request.query_params['startDate'], '%Y-%m-%d').date())
+
+        return Response(PaymentSerializer(payments, many=True).data)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
