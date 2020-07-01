@@ -204,7 +204,7 @@ class ScheduleViewSet(viewsets.ModelViewSet):
         startWeek = datetime.today() - full_datetime.timedelta(datetime.today().weekday())
 
         if (weeklySchedule.start < startWeek.date()):
-            return Response({'Error': [{'msg': 'Cant not change the old scheule'}]}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'Error': [{'msg': 'Cant not change the old schedule'}]}, status=status.HTTP_400_BAD_REQUEST)
         user_schedules = Schedule.objects.filter(
             staff=user, weeklySchedule=weeklySchedule)
         for user_schedule in user_schedules:
@@ -248,6 +248,11 @@ class ScheduleViewSet(viewsets.ModelViewSet):
 
         weeklySalary = WeeklySalary.objects.filter(
             staff=user, weeklySchedule=weeklySchedule)
+
+        startWeek = datetime.today() - full_datetime.timedelta(datetime.today().weekday())
+
+        if (weeklySchedule.start < startWeek.date()):
+            return Response({'Error': [{'msg': 'Cant not change the old schedule'}]}, status=status.HTTP_400_BAD_REQUEST)
 
         schedule.delete()
 
