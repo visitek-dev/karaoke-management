@@ -19,7 +19,6 @@ import Users from "./views/Users";
 import UsersAdd from "./views/UsersAdd";
 import UsersEdit from "./views/UsersEdit";
 import Schedules from "./views/Schedules";
-import SchedulesAdd from "./views/SchedulesAdd";
 import Rooms from "./views/Rooms";
 import Products from "./views/Products";
 import ProductsAdd from "./views/ProductsAdd";
@@ -96,14 +95,6 @@ const App = () => {
                 light={checked}
                 toggleTheme={toggleChecked}
                 component={Schedules}
-              ></AdminRoute>
-              <AdminRoute
-                exact
-                path="/schedules-add"
-                user={user}
-                light={checked}
-                toggleTheme={toggleChecked}
-                component={SchedulesAdd}
               ></AdminRoute>
               <AdminRoute
                 exact

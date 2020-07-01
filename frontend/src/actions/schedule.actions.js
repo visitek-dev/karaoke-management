@@ -142,8 +142,8 @@ function add(schedule) {
   return async (dispatch) => {
     dispatch(request(schedule));
     await scheduleService.add(schedule).then(
-      (schedule) => {
-        dispatch(success(schedule));
+      (data) => {
+        dispatch(success(data));
         history.push({ pathname: "/schedules", state: 201 });
       },
       (error) => {
@@ -165,8 +165,8 @@ function add(schedule) {
   function request(schedule) {
     return { type: scheduleConstants.ADD_REQUEST, schedule };
   }
-  function success(schedule) {
-    return { type: scheduleConstants.ADD_SUCCESS, schedule };
+  function success(data) {
+    return { type: scheduleConstants.ADD_SUCCESS, data };
   }
   function failure(error) {
     return { type: scheduleConstants.ADD_FAILURE, error };

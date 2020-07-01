@@ -3,8 +3,8 @@ import { scheduleConstants } from "../constants";
 const initialState = {
   loading: true,
   isAuthenticated: false,
-  schedule: null,
   items: [],
+  salaries: [],
   item: [],
   maxPage: null,
   currentPage: null,
@@ -47,6 +47,9 @@ export function schedules(state = initialState, action) {
             (schedule) => schedule.id !== state.deleteId[0]
           ),
         ],
+        salaries: [...state.salaries].map((obj) =>
+          obj.staff === action.data.staff ? action.data : obj
+        ),
         deleteId: null,
       };
     case scheduleConstants.DELETE_FAILURE:
@@ -99,6 +102,7 @@ export function schedules(state = initialState, action) {
       return {
         ...state,
         items: action.data.schedules,
+        salaries: action.data.weekly_salaries,
       };
     case scheduleConstants.GETBY_WEEKLYSCHEDULE_ID_ERROR:
       return { error: action.error };
@@ -111,7 +115,11 @@ export function schedules(state = initialState, action) {
       return {
         ...state,
         item: [],
-        items: [...state.items, action.schedule],
+        items: [...state.items, action.data.schedule],
+
+        salaries: [...state.salaries].map((obj) =>
+          obj.staff === action.data.salary.staff ? action.data.salary : obj
+        ),
       };
     case scheduleConstants.ADD_FAILURE:
       return { ...state, error: action.error };

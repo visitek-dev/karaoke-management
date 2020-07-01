@@ -84,10 +84,13 @@ async function _delete(ids) {
     // headers: authHeader()
   };
   console.log(ids);
-  const promises = await ids.map((id) => {
-    return axios.delete(`/api/schedules/${id}`, requestConfig);
-  });
-  return Promise.all(promises).then(handleResponse);
+  // const promises = await ids.map((id) => {
+  //   return axios.delete(`/api/schedules/${id}`, requestConfig);
+  // });
+  // return Promise.all(promises).then(handleResponse);
+  return await axios
+    .delete(`/api/schedules/${ids[0]}`, requestConfig)
+    .then(handleResponse);
 }
 
 function handleResponse(response) {
