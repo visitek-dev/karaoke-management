@@ -95,7 +95,7 @@ class AllPaymentViewSet(viewsets.ReadOnlyModelViewSet):
         payments = Payment.objects.all()
         if 'startDate' in request.query_params:
             payments = Payment.objects.filter(checkOutDate__gt=datetime.strptime(
-                request.query_params['startDate'], '%Y-%m-%d').date())
+                request.query_params['startDate'], '%d/%m/%Y').date())
 
         return Response(PaymentSerializer(payments, many=True).data)
 
