@@ -87,6 +87,7 @@ class ListCreateUserViewSet(views.APIView, PaginationHandlerMixin):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.is_staff = request.data['is_staff']
+        serializer.salary = request.data['salary']
         user = serializer.save()
         user.save()
         AuthToken.objects.create(user)[1]
