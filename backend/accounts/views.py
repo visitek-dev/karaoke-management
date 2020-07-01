@@ -201,6 +201,10 @@ class ScheduleViewSet(viewsets.ModelViewSet):
         user = get_object_or_404(User, pk=request.data['staff'])
         weeklySchedule = get_object_or_404(
             WeeklySchedule, pk=request.data['weeklySchedule'])
+        startWeek = datetime.today() - full_datetime.timedelta(datetime.today().weekday())
+
+        if (weeklySchedule < startWeek)
+        return Response({'Error': [{'msg': 'Cant not change the old scheule'}]}, status=status.HTTP_400_BAD_REQUEST)
         user_schedules = Schedule.objects.filter(
             staff=user, weeklySchedule=weeklySchedule)
         for user_schedule in user_schedules:
