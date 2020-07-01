@@ -86,7 +86,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'password', 'is_staff')
+        fields = ('id', 'username', 'email', 'password', 'is_staff', 'salary')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -99,6 +99,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             user.is_staff = validated_data['is_staff']
             print(user.is_staff)
 
+        if 'salary' in validated_data:
+            user.salary = validated_data['salary']
         return user
 
 # Login Serializer
