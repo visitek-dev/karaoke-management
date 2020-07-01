@@ -6,6 +6,7 @@ import {
   scheduleActions,
   userActions,
   weeklyScheduleActions,
+  receiptActions,
 } from "../actions";
 import { history } from "../store";
 
@@ -113,6 +114,12 @@ const useStyles = makeStyles((theme) => ({
   alertContainer: {
     marginBottom: theme.spacing(1),
   },
+  win: {
+    color: theme.palette.success.main,
+  },
+  lose: {
+    color: theme.palette.error.main,
+  },
 }));
 
 const weekDay = [
@@ -139,6 +146,18 @@ function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function subtotalSalaries(items) {
+  return items
+    .map(({ weeklySalary }) => parseFloat(weeklySalary))
+    .reduce((sum, i) => sum + i, 0);
+}
+
+function subtotalReceipts(items) {
+  return items
+    .map(({ total }) => parseFloat(total))
+    .reduce((sum, i) => sum + i, 0);
+}
+
 export default function Schedules(props) {
   const classes = useStyles();
 
@@ -159,6 +178,10 @@ export default function Schedules(props) {
   const schedules = useSelector((state) => state.schedules);
   const users = useSelector((state) => state.users);
   const weeklySchedules = useSelector((state) => state.weeklySchedules);
+  const receipts = useSelector((state) => state.receipts);
+
+  var totalSalaries = subtotalSalaries(schedules.salaries);
+  var totalReceipts = subtotalReceipts(receipts.items);
 
   const dispatch = useDispatch();
 
@@ -176,10 +199,10 @@ export default function Schedules(props) {
 
           var startDay = new Date(element.start);
           var lastday = new Date(
-            new Date().setDate(startDay.getDate() - startDay.getDay() + 7)
+            startDay.setDate(startDay.getDate() - startDay.getDay() + 7)
           );
 
-          if (startDay < curr && curr < lastday) return true;
+          if (new Date(element.start) < curr && curr < lastday) return true;
           else return false;
         })
       );
@@ -201,7 +224,20 @@ export default function Schedules(props) {
       )
         setValidate(false);
       else setValidate(true);
-    }
+
+      var startDay = new Date(selectedWeeklySchedule.start);
+      var lastday = new Date(
+        startDay.setDate(startDay.getDate() - startDay.getDay() + 7)
+      )
+        .toISOString()
+        .split("T")[0];
+
+      dispatch(
+        receiptActions.getAllNonPagination(
+          `?startDate=${selectedWeeklySchedule.start}&&endDate=${lastday}`
+        )
+      );
+    } else setValidate(false);
   }, [selectedWeeklySchedule, dispatch]);
 
   useEffect(() => {
@@ -369,8 +405,8 @@ export default function Schedules(props) {
                         >
                           <Grid item>
                             <DatePicker
-                              disableToolbar
                               disablePast
+                              disableToolbar
                               autoOk
                               variant="inline"
                               label="Weekly Schedule day"
@@ -695,6 +731,33 @@ export default function Schedules(props) {
                                 </TableRow>
                               )
                           )}
+
+                          <TableRow>
+                            <TableCell colSpan={2} rowSpan={3} />
+                            <TableCell colSpan={2}>Salaries total</TableCell>
+                            <TableCell align="right">
+                              {numberWithCommas(totalSalaries)}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell colSpan={2}>Receipts total</TableCell>
+                            <TableCell align="right">
+                              {numberWithCommas(totalReceipts)}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell colSpan={2}>Total</TableCell>
+                            <TableCell
+                              align="right"
+                              className={
+                                totalReceipts - totalSalaries > 0
+                                  ? classes.win
+                                  : classes.lose
+                              }
+                            >
+                              {numberWithCommas(totalReceipts - totalSalaries)}
+                            </TableCell>
+                          </TableRow>
                         </TableBody>
                       </Table>
                     </TableContainer>

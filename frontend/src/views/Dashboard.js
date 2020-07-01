@@ -192,10 +192,14 @@ export default function Dashboard(props) {
   }, []);
 
   useEffect(() => {
+    var start = new Date(new Date().setDate(new Date().getDate() - 7))
+      .toISOString()
+      .split("T")[0];
+
     dispatch(userActions.getAllNonPagination());
     dispatch(roomActions.getAllNonPagination());
     dispatch(productActions.getAllNonPagination());
-    dispatch(receiptActions.getAllNonPagination());
+    dispatch(receiptActions.getAllNonPagination(`?startDate=${start}`));
   }, [dispatch]);
 
   const handleClose = (event, reason) => {

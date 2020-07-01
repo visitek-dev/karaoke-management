@@ -31,23 +31,24 @@ function getAll(url) {
   }
 }
 
-function getAllNonPagination() {
+function getAllNonPagination(url) {
+  console.log(url);
   return async (dispatch) => {
     dispatch(request());
-    await receiptService.getAllNonPagination().then(
+    await receiptService.getAllNonPagination(url).then(
       (rooms) => dispatch(success(rooms)),
       (error) => dispatch(failure(error.toString()))
     );
   };
 
   function request() {
-    return { type: receiptConstants.GETALL_REQUEST };
+    return { type: receiptConstants.GETALL_NONPAGINATION_REQUEST };
   }
   function success(receipts) {
-    return { type: receiptConstants.GETALL_SUCCESS, receipts };
+    return { type: receiptConstants.GETALL_NONPAGINATION_SUCCESS, receipts };
   }
   function failure(error) {
-    return { type: receiptConstants.GETALL_FAILURE, error };
+    return { type: receiptConstants.GETALL_NONPAGINATION_FAILURE, error };
   }
 }
 

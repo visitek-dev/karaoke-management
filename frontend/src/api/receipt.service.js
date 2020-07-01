@@ -19,12 +19,15 @@ async function getAll(url = null) {
   return await axios.get(params, requestConfig).then(handleResponse);
 }
 
-async function getAllNonPagination() {
+async function getAllNonPagination(url = null) {
   const requestConfig = {
     //headers: authHeader(),
   };
+
+  const params = url === null ? `` : url;
+
   return await axios
-    .get(`/api/allPayments/`, requestConfig)
+    .get(`/api/allPayments/${params}`, requestConfig)
     .then(handleResponse);
 }
 

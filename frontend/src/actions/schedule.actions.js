@@ -154,7 +154,7 @@ function add(schedule) {
 
           console.log(error.response.data[errorkey][0]);
 
-          dispatch(failure(errorkey.toUpperCase() + ": " + errorValue));
+          dispatch(failure(errorkey.toUpperCase() + ": " + errorValue.msg));
         } else {
           dispatch(failure(error.toString()));
         }

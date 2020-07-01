@@ -71,10 +71,11 @@ export default function UserAdd(props) {
     username: "",
     email: "",
     password: "",
+    salary: 0,
     is_staff: false,
   });
 
-  const { username, email, password } = formData;
+  const { username, email, password, salary } = formData;
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -156,6 +157,18 @@ export default function UserAdd(props) {
               type="password"
               name="password"
               value={password}
+              onChange={(e) => onChange(e)}
+              onKeyPress={(e) => keyPressed(e)}
+            />
+            <TextField
+              fullWidth
+              style={{ marginTop: "10px" }}
+              label="Wage"
+              id="outlined-wage"
+              variant="outlined"
+              name="salary"
+              type="number"
+              value={salary || 0}
               onChange={(e) => onChange(e)}
               onKeyPress={(e) => keyPressed(e)}
             />

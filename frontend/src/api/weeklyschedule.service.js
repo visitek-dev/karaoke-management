@@ -24,7 +24,7 @@ async function getAllNonPagination() {
     //headers: authHeader(),
   };
   return await axios
-    .get(`/api/allWeeklySchedules/`, requestConfig)
+    .get(`/api/allWeeklySchedules/?filter=-createat`, requestConfig)
     .then(handleResponse);
 }
 

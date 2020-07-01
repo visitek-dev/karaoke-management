@@ -98,6 +98,28 @@ export function receipts(state = initialState, action) {
     case receiptConstants.ADD_FAILURE:
       return { ...state, error: action.error };
 
+    case receiptConstants.GETALL_NONPAGINATION_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case receiptConstants.GETALL_NONPAGINATION_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: null,
+        next: action.receipts.next,
+        previous: action.receipts.previous,
+        items: action.receipts,
+        maxPage: action.receipts.maxPage,
+        currentPage: action.receipts.currentPage,
+      };
+    case receiptConstants.GETALL_NONPAGINATION_FAILURE:
+      return {
+        ...state,
+        error: action.error,
+      };
+
     default:
       return state;
   }

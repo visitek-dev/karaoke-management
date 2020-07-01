@@ -44,11 +44,18 @@ export default function Chart() {
         weekReceipts.push([]);
         totalReceipts.push([]);
         weekReceipts[weekReceipts.length - 1] = receipts.items.filter(
-          (x) => new Date(x.checkOutDate).getDate() === new Date().getDate() - i
+          (x) =>
+            new Date(x.checkOutDate).toISOString().split("T")[0] ===
+            new Date(new Date(new Date().setDate(new Date().getDate() - i)))
+              .toISOString()
+              .split("T")[0]
         );
 
-        console.log(weekReceipts);
-        let checkOutDate = (new Date().getDate() - i).toString();
+        var curr = new Date();
+        let checkOutDate = new Date(
+          curr.setDate(curr.getDate() - i)
+        ).toLocaleDateString("en-GB");
+
         let total = 0;
 
         for (let i = 0; i < weekReceipts[weekReceipts.length - 1].length; i++) {
@@ -72,6 +79,10 @@ export default function Chart() {
   //     );
   //   }
   // }
+
+  useEffect(() => {
+    console.log(TotalReceipts);
+  }, [TotalReceipts]);
 
   return (
     <React.Fragment>
